@@ -1,0 +1,21 @@
+mkdir helloworld
+cd helloworld
+
+npm init -y
+npm install hardhat
+npx hardhat --init
+
+npx hardhat compile
+
+run both tests on runtime hardhat node
+
+    npx hardhat test
+
+run only mocha tests on local node
+
+    npx hardhat test test/HelloWorld.test.ts --network local
+
+run only solidity tests on runtime hardhat node
+
+    npx hardhat test contracts/HelloWorld.t.sol --network local
+    npx hardhat test contracts/HelloWorld.t.sol
