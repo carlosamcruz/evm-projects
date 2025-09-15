@@ -11,8 +11,6 @@ describe("Hello World", function () {
   before(async () => {
     helloWorld = await ethers.deployContract("HelloWorld");
 
-    //console.log("HW address 0:", await helloWorld.getAddress());
-
   });
 
   it("Should read the message", async function () {
@@ -21,16 +19,12 @@ describe("Hello World", function () {
 
     const result = await helloWorld.message();
 
-    //console.log("Owner 1:", await helloWorld.getAddress());
-
     expect(result === "Hello EVM", "They are not equal");
   });
 
   it("Should update message", async function () {
  
     const [owner, otherAccount] = await ethers.getSigners();
-
-    //console.log("HW address 2:", await helloWorld.getAddress());
 
     await helloWorld.connect(otherAccount).update("new message");
 
@@ -43,49 +37,37 @@ describe("Hello World", function () {
  
     const [owner, otherAccount] = await ethers.getSigners();
 
-//    console.log("Add Before 3:", await helloWorld.getAddress());
-
-    //await helloWorld.connect(otherAccount);
-/*
-    console.log("Add After:", await helloWorld.getAddress());
-
-
-    const result = await helloWorld.message();
-
-    console.log("Owner 1:", await helloWorld.getAddress());
-
-    expect(result === "Hello EVM", "They are not equal");
-
-    console.log("Owner HW:", await helloWorld.owner());
-
-*/
-
     await expect(helloWorld.connect(otherAccount).finalize()).to.be.revertedWith("Not owner");
-
-    /*
-    try {
-
-      await expect(helloWorld.connect(otherAccount).finalize()).to.be.revertedWith("Not owner");
-
-
-      // If we got here, the call didn't fail as expected
-      // Não pode conter mensagem igual ao do erro
-      assert.fail("Expected transaction to be reverted due to HashOutputs Mismatch");
-    } catch (err: any) {
-
-      expect(err.message).to.include("Not owner");
-    }
-
-    */
-
-    
+   
   });
 
-  
+  it("Should not Finalize, Wrong Message", async function () {
+ 
+    const [owner, otherAccount] = await ethers.getSigners();
 
+    await expect(helloWorld.connect(owner).finalize()).to.be.revertedWith("Message must be 'finalize'");
+   
+  });
 
-  //TO DO: Testar após a finalização
+  it("Should Finalize", async function () {
+ 
+    const [owner, otherAccount] = await ethers.getSigners();
 
+    await helloWorld.connect(otherAccount).update("finalize");
+
+    await helloWorld.connect(owner).finalize();
+
+    expect(await helloWorld.owner()).to.equal("0x0000000000000000000000000000000000000000");
+   
+  });
+
+  it("Should NOT update message, contract finalized", async function () {
+ 
+    const [owner, otherAccount] = await ethers.getSigners();
+
+    await expect(helloWorld.connect(otherAccount).update("new message")).to.be.revertedWith("Owner is 0, the contract is already finalized.");
+    
+  });
   
 });
 
