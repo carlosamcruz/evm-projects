@@ -22,7 +22,6 @@ const config: HardhatUserConfig = {
     },
   },
   networks: {
-
     local:{
       type: "http",
       chainType: "l1",
@@ -33,7 +32,7 @@ const config: HardhatUserConfig = {
         mnemonic: "test test test test test test test test test test test junk"
       }
     },
-    
+
     hardhatMainnet: {
       type: "edr-simulated",
       chainType: "l1",
