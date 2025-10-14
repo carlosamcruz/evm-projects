@@ -48,16 +48,12 @@ contract Counter {
         require(count >= 3, "Count not high enough");
         require(address(this).balance >= MIN_BALANCE_WEI, "Insufficient balance");
 
-        address payable currentOwner = payable(owner);
-
         // 1) transfere todo o saldo ao dono atual
-        (bool ok, ) = currentOwner.call{value: address(this).balance}("");
+        (bool ok, ) = payable(owner).call{value: address(this).balance}("");
         require(ok, "Transfer failed");
 
         // 2) trava o contrato
         owner = address(0);
     }
 
-    // Depósitos voluntários
-    receive() external payable {}
 }
