@@ -3,9 +3,6 @@ import { network } from "hardhat";
 
 const { ethers } = await network.connect();
 
-
-
-
 describe("Counter", function () {
 
   let counter: any;
@@ -13,7 +10,7 @@ describe("Counter", function () {
   let otherAccount1: any;
   let otherAccount2: any;
 
-  const initialWei = ethers.parseEther("0.005"); // valor enviado no deploy
+  const initialWei = ethers.parseEther("0.0015"); // valor enviado no deploy
   const fee = ethers.parseEther("0.01"); // valor enviado no deploy
 
   before(async () => {
@@ -27,7 +24,7 @@ describe("Counter", function () {
       value: initialWei, // equivalente a msg.value
     });
 
-    await counter.waitForDeployment();
+    //await counter.waitForDeployment();
   });
 
   it("deve iniciar com o valor definido e saldo enviado", async () => {
@@ -35,13 +32,16 @@ describe("Counter", function () {
     expect(await counter.owner()).to.equal(owner.address);
 
     const balance = await ethers.provider.getBalance(await counter.getAddress());
-    expect(balance).to.equal(ethers.parseEther("0.005"));
+    expect(balance).to.equal(ethers.parseEther("0.0015"));
   });
+
+ 
 
   it("finalize falha por saldo insuficiente", async () => {
     // contador está em 2; finalize deve falhar se exigir count == 0
     await expect(counter.connect(owner).finalize()).to.be.revertedWith("Insufficient balance");
   });
+  
   
   it("incremento: deve incrementar o contador em 1", async () => {
     await counter.connect(otherAccount1).increment({
@@ -107,9 +107,11 @@ describe("Counter", function () {
   
     // owner deve ter recebido o valor que estava no contrato (considerando taxas de gas)
     expect(ownerBalanceAfter).to.be.greaterThan(ownerBalanceBefore);
+
+    await expect(counter.connect(otherAccount1).increment({
+      value: fee, // equivalente a msg.value
+    })).to.be.revertedWith("Already finalized");
+
   });
-  
-
-
 
 });

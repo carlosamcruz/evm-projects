@@ -7,7 +7,7 @@ contract Counter {
 
     int64   public count;
     address public owner;   // address(0) => finalizado
-
+    
     // ---- Reentrancy Guard ----
     //uint256 private _entered; // 0 = livre, 1 = ocupado
     uint256 private _entered = 0;
@@ -23,7 +23,6 @@ contract Counter {
         require(msg.sender == owner, "Not owner");
         _;
     }
-
     // ---- Constructor ----
     constructor(int64 startValue) payable {
         owner = msg.sender;
@@ -34,13 +33,13 @@ contract Counter {
     // ---- Funções principais ----
     function increment() external payable nonReentrant {
         require(owner != address(0), "Already finalized");
-        require(msg.value == FEE_WEI, "Wrong fee");
+        require(msg.value >= FEE_WEI, "Wrong fee");
         unchecked { count += 1; }
     }
 
     function decrement() external payable nonReentrant {
         require(owner != address(0), "Already finalized");
-        require(msg.value == FEE_WEI, "Wrong fee");
+        require(msg.value >= FEE_WEI, "Wrong fee");
         unchecked { count -= 1; }
     }
 
@@ -55,5 +54,4 @@ contract Counter {
         // 2) trava o contrato
         owner = address(0);
     }
-
 }

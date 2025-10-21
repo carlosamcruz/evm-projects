@@ -19,3 +19,16 @@ run only solidity tests on runtime hardhat node
 
     npx hardhat test contracts/HelloWorld.t.sol --network local
     npx hardhat test contracts/HelloWorld.t.sol
+
+Install dotenv
+npm i dotenv
+
+Se necessário:
+
+npm i -D @nomicfoundation/hardhat-verify
+
+Deploy na TestNet
+npx hardhat run scripts/deploy.ts --network bsctest
+
+Verify Contract:
+npx hardhat verify --network bsctest 0xa2d678A4d31966a7fC9bA73463438c3460c969e6 "3"
